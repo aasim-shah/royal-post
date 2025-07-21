@@ -80,7 +80,7 @@ export async function sendRoyalPostEmail(data: RoyalPostFormData) {
 
   try {
     const response = await resend.emails.send({
-      from: process.env.FROM_EMAIL || 'Royal Post <no-reply@aasimshah.com>',
+      from: process.env.FROM_EMAIL || 'Royal Post <contact@aasimshah.com>',
       to: process.env.CONTACT_EMAIL || 'syedasimshahh@gmail.com',
       subject: `📬 New Royal Post Form - Branch ${branchNumber}`,
       html,
