@@ -1,28 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { contactFormSchema } from '@/lib/validations';
-import { sendContactEmail } from '@/lib/email';
+import { sendRoyalPostEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     
-    // Validate the request body
-    const validatedData = contactFormSchema.parse(body);
-    
-    // Send the email
-    const result = await sendContactEmail(validatedData);
-    
-    if (result.success) {
-      return NextResponse.json(
-        { message: 'Email sent successfully', id: result.data?.id },
-        { status: 200 }
-      );
-    } else {
-      return NextResponse.json(
-        { error: result.error || 'Failed to send email' },
-        { status: 500 }
-      );
-    }
+  //  dummy
+
+  return NextResponse.json({ message: 'Contact form submitted successfully' }, { status: 200 });
+
   } catch (error) {
     console.error('Contact form error:', error);
     
