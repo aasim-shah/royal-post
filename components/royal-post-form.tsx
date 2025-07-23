@@ -181,7 +181,7 @@ export function RoyalPostForm() {
                           <Phone className="w-4 h-4 mr-1" /> Phone Number
                         </FormLabel>
                         <FormControl>
-                          <Input type="tel" placeholder="03XX-XXXXXXX" {...field} className="bg-white border border-red-300 focus:border-red-500 h-11" />
+                          <Input type="number" placeholder="03XX-XXXXXXX" {...field} className="bg-white border border-red-300 focus:border-red-500 h-11" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

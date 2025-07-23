@@ -9,7 +9,7 @@ export default function HomePage() {
           <div className="space-y-4">
             <div className="flex justify-center mb-6">
               <div className="">
-<Image src="/rmg_logo.svg" alt="Description" width={100} height={100} />
+                <Image src="/rmg_logo.svg" alt="Description" width={100} height={100} />
               </div>
             </div>
             <h1 className="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-red-600 via-orage-600 to-red-800 bg-clip-text text-transparent">
@@ -19,7 +19,7 @@ export default function HomePage() {
               If you were a post master, enter your details here. Complete the form below with information for both applicants.
             </p>
           </div>
-          
+
           <div className="flex justify-center mt-8">
             <div className="w-32 h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent rounded-full"></div>
           </div>
@@ -28,7 +28,7 @@ export default function HomePage() {
         <div className="relative">
           <div className="absolute -top-4 -left-4 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
           <div className="absolute -bottom-8 -right-4 w-72 h-72 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-          
+
           <div className="relative">
             <RoyalPostForm />
           </div>
@@ -36,7 +36,7 @@ export default function HomePage() {
 
         <div className="mt-12 text-center">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-200/50 max-w-2xl mx-auto">
-           
+
             <p className="text-muted-foreground">
               Thank you! We have received your details, we will get back to you in due course.
               <br />
