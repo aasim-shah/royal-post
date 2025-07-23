@@ -57,13 +57,25 @@ export function RoyalPostForm() {
     },
   });
 
-  const handlePhotoUpload = (file: File | null, person: 1 | 2) => {
-    if (person === 1) {
-      setPhoto1(file);
-    } else {
-      setPhoto2(file);
-    }
-  };
+  const MAX_FILE_SIZE_MB = 2;
+
+ const handlePhotoUpload = (file: File | null, person: 1 | 2) => {
+  if (!file) return;
+
+  const sizeInMB = file.size / (1024 * 1024);
+  if (sizeInMB > MAX_FILE_SIZE_MB) {
+    toast.error('File too large', {
+      description: `File must be less than ${MAX_FILE_SIZE_MB}MB.`,
+    });
+    return;
+  }
+
+  if (person === 1) {
+    setPhoto1(file);
+  } else {
+    setPhoto2(file);
+  }
+};
 
   const onSubmit = async (data: RoyalPostFormData) => {
     setIsSubmitting(true);

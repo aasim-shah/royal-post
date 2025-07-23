@@ -1,14 +1,6 @@
 export const dynamic = 'force-dynamic';
 
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '5mb',
-    },
-  },
-};
-
 import { NextRequest, NextResponse } from 'next/server';
 import { royalPostFormSchema } from '@/lib/validations';
 import { sendRoyalPostEmail } from '@/lib/email';
