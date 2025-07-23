@@ -50,8 +50,8 @@ export async function sendRoyalPostEmail(data: RoyalPostFormData) {
 
   const html = `
     <div style="font-family: Arial, sans-serif; color: #333; max-width: 800px; margin: 0 auto;">
-      <div style="background: linear-gradient(to right, #1e40af, #7c3aed); padding: 20px; color: white; border-radius: 10px 10px 0 0;">
-        <h2 style="margin: 0;">📮 Royal Post Form Submission</h2>
+      <div style="background: linear-gradient(to right, #cc1b08ff, #b70505ff); padding: 20px; color: white; border-radius: 10px 10px 0 0;">
+        <h5 style="margin: 0;"> Royal Post Form Submission</h5>
         <p style="margin-top: 5px;">Branch Number: ${branchNumber}</p>
       </div>
 
