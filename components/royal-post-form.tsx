@@ -1,14 +1,18 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { royalPostFormSchema, type RoyalPostFormData } from '@/lib/validations';
 
 import { toast } from 'sonner';
-import { Loader2, Send, Upload, User, Calendar, Phone } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form';
+import { Loader2, Send, Upload, User } from 'lucide-react';
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from './ui/card';
+import {
+  Form, FormControl, FormField, FormItem, FormLabel, FormMessage
+} from './ui/form';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 
@@ -18,14 +22,23 @@ export function RoyalPostForm() {
   const [photo1, setPhoto1] = useState<File | null>(null);
   const [photo2, setPhoto2] = useState<File | null>(null);
 
+  const photo1Ref = useRef<HTMLInputElement>(null);
+  const photo2Ref = useRef<HTMLInputElement>(null);
+
   const form = useForm<RoyalPostFormData>({
     resolver: zodResolver(royalPostFormSchema),
     defaultValues: {
       branchNumber: '',
-      firstName1: '', lastName1: '', phone1: '', dob1: '',
-      firstName2: '', lastName2: '', phone2: '', dob2: '',
+      firstName1: '',
+      lastName1: '',
+      phone1: '',
+      dob1: '',
+      firstName2: '',
+      lastName2: '',
+      phone2: '',
+      dob2: '',
       showSecondPerson: false,
-    }
+    },
   });
 
   const MAX_FILE_SIZE_MB = 2;
@@ -40,17 +53,27 @@ export function RoyalPostForm() {
     person === 1 ? setPhoto1(file) : setPhoto2(file);
   };
 
-  const convertToBase64 = (file: File): Promise<string> => new Promise((res, rej) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => res(reader.result as string);
-    reader.onerror = err => rej(err);
-  });
+  const convertToBase64 = (file: File): Promise<string> =>
+    new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => res(reader.result as string);
+      reader.onerror = (err) => rej(err);
+    });
+
+  const resetAllFields = () => {
+    form.reset();
+    setPhoto1(null);
+    setPhoto2(null);
+    setShowSecondPerson(false);
+    if (photo1Ref.current) photo1Ref.current.value = '';
+    if (photo2Ref.current) photo2Ref.current.value = '';
+  };
 
   const onSubmit = async (raw: RoyalPostFormData) => {
     const data = { ...raw, showSecondPerson };
-    console.log('Submitting data:', data);
     setIsSubmitting(true);
+
     try {
       const formData: any = { ...data };
       if (photo1) formData.photo1 = await convertToBase64(photo1);
@@ -65,11 +88,25 @@ export function RoyalPostForm() {
       const result = await res.json();
       if (res.ok) {
         toast.success('Form submitted successfully');
-        form.reset();
-        setPhoto1(null); setPhoto2(null); setShowSecondPerson(false);
+        resetAllFields();
       } else {
-        toast.error('Failed to submit', { description: result.error || 'Something went wrong.' });
-      }
+        console.log({ result })
+        let errorMessage = result.error || 'Something went wrong.';
+  
+        // If backend returns Zod-style errors
+        if (typeof result.details === 'string') {
+          try {
+            const parsed = JSON.parse(result.details);
+            if (Array.isArray(parsed)) {
+              const fieldErrors = parsed.map((e: any) => `${e.path?.[0] ?? 'Field'}: ${e.message}`).join('\n');
+              errorMessage += `\n${fieldErrors}`;
+            }
+          } catch (e) {
+            // Ignore JSON parse error
+          }
+        }
+      
+        toast.error('Failed to submit', { description: errorMessage });      }
     } catch (err) {
       toast.error('Network error');
     } finally {
@@ -86,11 +123,11 @@ export function RoyalPostForm() {
       <CardContent className="p-8">
         <Form {...form}>
           <form onSubmit={form.handleSubmit((d) => onSubmit({ ...d, showSecondPerson }))} className="space-y-6">
-            <FormField name="branchNumber" control={form.control} render={({ field }: { field: any }) => (
+            <FormField name="branchNumber" control={form.control} render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-red-700">Branch Number</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="e.g. 123" className="bg-white border border-red-300 focus:border-red-500 h-11" />
+                  <Input {...field} placeholder="e.g. 3456723456782" className="bg-white border border-red-300 focus:border-red-500 h-11" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,17 +143,25 @@ export function RoyalPostForm() {
                     form.setValue('phone2', '');
                     form.setValue('dob2', '');
                     setPhoto2(null);
+                    if (photo2Ref.current) photo2Ref.current.value = '';
                   }}>×</button>
                 )}
                 <h3 className="font-semibold mb-4 text-red-800 flex items-center">
                   <User className="w-4 h-4 mr-2" /> Person {p} Details
                 </h3>
                 {[['firstName', 'First Name', 'John'], ['lastName', 'Last Name', 'Doe'], ['phone', 'Phone Number', '03XX-XXXXXXX'], ['dob', 'Date of Birth', '']].map(([key, label, placeholder]) => (
-                  <FormField  key={key + p} name={`${key}${p}` as keyof RoyalPostFormData} control={form.control} render={({ field }: { field: any }) => (
+                  <FormField key={key + p} name={`${key}${p}` as keyof RoyalPostFormData} control={form.control} render={({ field }) => (
                     <FormItem className="mb-4">
                       <FormLabel className="text-red-700">{label}</FormLabel>
                       <FormControl>
-                        <Input {...field} placeholder={placeholder} type={key === 'dob' ? 'date' : 'text'} className="bg-white border  border-red-300 focus:border-red-500 h-11" />
+                        <Input
+                          {...field}
+                          value={typeof field.value === 'string' ? field.value : ''}
+                          placeholder={placeholder}
+                          type={key === 'dob' ? 'date' : 'text'}
+                          className="bg-white border border-red-300 focus:border-red-500 h-11"
+                        />
+
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -129,6 +174,7 @@ export function RoyalPostForm() {
                   </label>
                   <div className="border-2 border-dashed border-red-300 rounded-lg p-4 bg-white">
                     <input
+                      ref={p === 1 ? photo1Ref : photo2Ref}
                       type="file"
                       accept="image/*"
                       onChange={(e) => handlePhotoUpload(e.target.files?.[0] || null, p as 1 | 2)}
@@ -146,7 +192,12 @@ export function RoyalPostForm() {
 
             {!showSecondPerson && (
               <div className="text-center">
-                <Button type="button" variant="outline" className="border border-red-400 text-red-700 hover:bg-red-50" onClick={() => setShowSecondPerson(true)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="border border-red-400 text-red-700 hover:bg-red-50"
+                  onClick={() => setShowSecondPerson(true)}
+                >
                   + Add Second Person
                 </Button>
               </div>

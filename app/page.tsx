@@ -36,10 +36,8 @@ export default function HomePage() {
 
         <div className="mt-12 text-center">
           <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 lg:p-8 shadow-sm border border-slate-200/50 max-w-2xl mx-auto">
-
             <p className="text-muted-foreground">
-              Thank you! We have received your details, we will get back to you in due course.
-              <br />
+            Your information will be securely sent to us via email. We'll review it and get back to you shortly.
             </p>
           </div>
         </div>
