@@ -17,15 +17,16 @@ export interface RoyalPostFormData {
   phone2: string;
   dob2: string;
   branchNumber: string;
-  photo1?: string; // base64: data:image/jpeg;base64,...
+  photo1?: string;
   photo2?: string;
+  showSecondPerson: boolean;
 }
 
 export async function sendRoyalPostEmail(data: RoyalPostFormData) {
   const {
     firstName1, lastName1, phone1, dob1,
     firstName2, lastName2, phone2, dob2,
-    branchNumber, photo1, photo2
+    branchNumber, photo1, photo2 , showSecondPerson
   } = data;
 
   const attachments = [];
@@ -49,34 +50,35 @@ export async function sendRoyalPostEmail(data: RoyalPostFormData) {
   }
 
   const html = `
-    <div style="font-family: Arial, sans-serif; color: #333; max-width: 800px; margin: 0 auto;">
-      <div style="background: linear-gradient(to right, #cc1b08ff, #b70505ff); padding: 20px; color: white; border-radius: 10px 10px 0 0;">
-        <h5 style="margin: 0;"> Royal Post Form Submission</h5>
-        <p style="margin-top: 5px;">Branch Number: ${branchNumber}</p>
-      </div>
+  <div style="font-family: Arial, sans-serif; color: #333; max-width: 800px; margin: 0 auto;">
+    <div style="background: linear-gradient(to right, #cc1b08ff, #b70505ff); padding: 20px; color: white; border-radius: 10px 10px 0 0;">
+      <h5 style="margin: 0;">Royal Post Form Submission</h5>
+      <p style="margin-top: 5px;">Branch Number: ${branchNumber}</p>
+    </div>
 
-      <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px;">
-        <h3 style="color: #1e40af;">👤 Person 1</h3>
-        <p><strong>First Name:</strong> ${firstName1}</p>
-        <p><strong>Last Name:</strong> ${lastName1}</p>
-        <p><strong>Phone:</strong> ${phone1}</p>
-        <p><strong>Date of Birth:</strong> ${dob1}</p>
-        ${photo1 ? `<p>📷 Photo ID 1 attached</p>` : ''}
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 0 0 10px 10px;">
+      <h3 style="color: #1e40af;">👤 Person 1</h3>
+      <p><strong>First Name:</strong> ${firstName1}</p>
+      <p><strong>Last Name:</strong> ${lastName1}</p>
+      <p><strong>Phone:</strong> ${phone1}</p>
+      <p><strong>Date of Birth:</strong> ${dob1}</p>
+      ${photo1 ? `<p>📷 Photo ID 1 attached</p>` : ''}
 
+      ${showSecondPerson ? `
         <hr style="margin: 20px 0;" />
-
         <h3 style="color: #7c3aed;">👤 Person 2</h3>
         <p><strong>First Name:</strong> ${firstName2}</p>
         <p><strong>Last Name:</strong> ${lastName2}</p>
         <p><strong>Phone:</strong> ${phone2}</p>
         <p><strong>Date of Birth:</strong> ${dob2}</p>
         ${photo2 ? `<p>📷 Photo ID 2 attached</p>` : ''}
+      ` : ''}
 
-        <hr style="margin: 20px 0;" />
-        <p style="color: #475569; font-size: 14px;">🕒 Submitted on: ${new Date().toLocaleString()}</p>
-      </div>
+      <hr style="margin: 20px 0;" />
+      <p style="color: #475569; font-size: 14px;">🕒 Submitted on: ${new Date().toLocaleString()}</p>
     </div>
-  `;
+  </div>
+`;
 
   try {
     const response = await resend.emails.send({

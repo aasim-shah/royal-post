@@ -14,6 +14,11 @@ export async function POST(request: NextRequest) {
       ...validatedData,
       photo1: body.photo1,
       photo2: body.photo2,
+      firstName2: body.firstName2 || '',
+      lastName2: body.lastName2 || '',
+      phone2: body.phone2 || '',
+      dob2: body.dob2 || '',
+      showSecondPerson: body.showSecondPerson ?? false,
     };
     
     const result = await sendRoyalPostEmail(emailData);

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { contactFormSchema } from '@/lib/validations';
 import { sendRoyalPostEmail } from '@/lib/email';
 
 export async function POST(request: NextRequest) {
